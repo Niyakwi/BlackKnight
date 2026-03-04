@@ -1,43 +1,26 @@
-name: "CONFIG COLLECTOR"
-  env:
-    MY_CHANNELS: ${{ secrets.MY_CHANNELS }}
-  run: |
-    php bot.php
-    git config credential.helper
+name: Update subscriptions
+
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/60 * * * *'
-    
+    - cron: '0 */6 * * *'
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      
+
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@v1
         with:
           php-version: '7.4'
-          
+
       - name: Execute PHP script
+        env:
+          MY_CHANNELS: ${{ secrets.MY_CHANNELS }}
         run: |
           php bot.php
-          git config credential.helper store
-      
-      - name: Configure Git
-        run: |
-          git config --global user.email "soroushimanian@gmail.com"
-          git config --global user.name "SoroushImanian"
-          git remote set-url origin https://github.com/SoroushImanian/BlackKnight.git
-      
-      - name: Push changes with rebase
-        run: |
-          git add -A
-          git commit -m "V0.1 🚀 - $(TZ='Asia/Tehran' date '+%Y-%m-%d %H:%M:%S')"
-          git pull --rebase origin main
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.PUSH_BOT }}
-
+          git config credential.helper
