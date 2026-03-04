@@ -1,5 +1,9 @@
 name: "CONFIG COLLECTOR"
-
+  env:
+    MY_CHANNELS: ${{ secrets.MY_CHANNELS }}
+  run: |
+    php bot.php
+    git config credential.helper
 on:
   workflow_dispatch:
   schedule:
